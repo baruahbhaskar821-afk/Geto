@@ -57,10 +57,11 @@ async def on_join_request(client, request):
 
 @Client.on_callback_query(filters.regex(r"^jr_(accept|decline):"))
 async def jr_action(client, cb):
-    # Parse data
+    # Parse data: "jr_accept:chat_id:user_id" = 3 parts
     try:
-        _, action, chat_id, user_id = cb.data.split(":")
+        action_full, chat_id, user_id = cb.data.split(":")
         chat_id, user_id = int(chat_id), int(user_id)
+        action = action_full.replace("jr_", "")  # "accept" or "decline"
     except Exception as e:
         return await cb.answer(f"❌ Invalid data: {e}", show_alert=True)
 
